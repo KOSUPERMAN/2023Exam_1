@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define INIT_CAPACITY 10
+typedef struct {
+    int *data;   
+    int size;    
+    int capacity;  // 数组容量
+} IntArrayList;
+// 创建一个空的数组列表  
+IntArrayList* createIntArrayList() {  
+    IntArrayList* list = (IntArrayList*)malloc(sizeof(IntArrayList));  
+    if (list == NULL) {  
+        printf("Memory allocation failed\n");  
+        return NULL;  
+    }  
+    list->data = (int*)malloc(INIT_CAPACITY * sizeof(int));  
+    if (list->data == NULL) {  
+        printf("Memory allocation failed\n");  
+        free(list);  
+        return NULL;  
+    }  
+    list->size = 0;  
+    list->capacity = INIT_CAPACITY;  
+    return list;  
+}
+// 销毁一个数组列表
+void destroyIntArrayList(IntArrayList *list) {
+    free(list->data);
+    free(list);
+}
+// 返回数组元素数量
+int getSize(IntArrayList *list) {
+    return list->size;
+}
+// 向数组尾添加元素
+void add(IntArrayList *list, int value) {
+    if (list->size == list->capacity) {  
+        list->capacity *= 2;  // 扩大数组容量为原来的两倍
+        list->data = (int*)realloc(list->data, list->capacity * sizeof(int));
+    }
+    list->data[list->size++] = value;  
+}
+// 移除数组中指定位置的元素，并将后面的元素向前移动
+int removeAt(IntArrayList *list, int index) {
+    if (index < 0|| index >= list->size) {  
+        printf("Index out of range\n");
+        return -1;
+    }
+    for (int i = index; i < list->size - 1; i++) {  // 将后面的元素向前移动一位
+        list->data[i] = list->data[i + 1];
+    }
+    list->size--;  
+    return 0;
+}
+// 删除第一个出现的指定元素（如果存在），并将后面的元素向前移动    
+int remove(IntArrayList *list, int value) {    
+    int index = 0;    
+    while (index < list->size && list->data[index] != value) {  // 查找元素在数组中的位置    
+        index++;    
+    }    
+    if (index == list->size) {  
+        printf("Value not found\n");    
+        return -1;    
+    } else {  // 如果找到该元素，通过removeAt函数将其移除    
+        removeAt(list, index);    
+        list->size--;  // 更新数组的大小  
+        return 0;
+    }    
+}
+int main() {
+    
+    return 0;
+}
